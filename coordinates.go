@@ -90,10 +90,6 @@ func LookupLatitudeLongitude(lat, lon float64) (string, bool) {
 			continue
 		}
 		if planar.MultiPolygonContains(prov.Polygon, p) {
-			if found != "" {
-				// Found in multiple provinces?!
-				return "", false
-			}
 			found = prov.Code
 			break
 		}

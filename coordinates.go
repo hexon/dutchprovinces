@@ -33,9 +33,11 @@ func parseCoordinatesJSON() []province {
 
 	var ret []province
 	for _, f := range db.Features {
+		polygon := project.MultiPolygon(f.Geometry.(orb.MultiPolygon), convertToWSG84)
 		prov := province{
-			Polygon:     project.MultiPolygon(f.Geometry.(orb.MultiPolygon), convertToWSG84),
-			BoundingBox: project.Bound(f.BBox.Bound(), convertToWSG84),
+			Polygon: polygon,
+			// Converting the corners of the RD bounding box isn't enough, because the RD grid is rotated relative to the meridians.
+			BoundingBox: polygon.Bound(),
 		}
 		switch f.Properties.MustString("naam") {
 		case "Drenthe":
@@ -88,10 +90,6 @@ func LookupLatitudeLongitude(lat, lon float64) (string, bool) {
 			continue
 		}
 		if planar.MultiPolygonContains(prov.Polygon, p) {
-			if found != "" {
-				// Found in multiple provinces?!
-				return "", false
-			}
 			found = prov.Code
 			break
 		}

@@ -24,6 +24,12 @@ func TestLookupLatitudeLongitude(t *testing.T) {
 			lon:  5.1678144,
 			want: "NL-FL",
 		},
+		{
+			// Outside the converted corners of Overijssel's RD bounding box.
+			lat:  52.12,
+			lon:  6.78,
+			want: "NL-OV",
+		},
 	}
 	for _, tc := range tests {
 		p, _ := LookupLatitudeLongitude(tc.lat, tc.lon)
